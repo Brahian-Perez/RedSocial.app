@@ -2,6 +2,15 @@ import { useState } from 'react'
 
 function Navbar() {
   const [menuAbierto, setMenuAbierto] = useState(false)
+  const [notificaciones, setNotificaciones] = useState([
+    { id: 1, texto: 'One new friend request' },
+    { id: 2, texto: 'John Doe posted on your wall' },
+    { id: 3, texto: 'Jane likes your post' },
+  ])
+
+  const marcarLeida = (id) => {
+    setNotificaciones(notificaciones.filter((notificacion) => notificacion.id !== id))
+  }
 
   return (
     <>
@@ -14,11 +23,12 @@ function Navbar() {
           <a href="#" className="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Account Settings"><i className="fa fa-user"></i></a>
           <a href="#" className="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white" title="Messages"><i className="fa fa-envelope"></i></a>
           <div className="w3-dropdown-hover w3-hide-small">
-            <button className="w3-button w3-padding-large" title="Notifications"><i className="fa fa-bell"></i><span className="w3-badge w3-right w3-small w3-green">3</span></button>
+            <button className="w3-button w3-padding-large" title="Notifications"><i className="fa fa-bell"></i>{notificaciones.length > 0 && <span className="w3-badge w3-right w3-small w3-green">{notificaciones.length}</span>}</button>
             <div className="w3-dropdown-content w3-card-4 w3-bar-block" style={{ width: '300px' }}>
-              <a href="#" className="w3-bar-item w3-button">One new friend request</a>
-              <a href="#" className="w3-bar-item w3-button">John Doe posted on your wall</a>
-              <a href="#" className="w3-bar-item w3-button">Jane likes your post</a>
+              {notificaciones.length === 0 && <span className="w3-bar-item w3-opacity">No new notifications</span>}
+              {notificaciones.map((notificacion) => (
+                <a key={notificacion.id} href="#" className="w3-bar-item w3-button" onClick={(e) => { e.preventDefault(); marcarLeida(notificacion.id) }}>{notificacion.texto}</a>
+              ))}
             </div>
           </div>
           <a href="#" className="w3-bar-item w3-button w3-hide-small w3-right w3-padding-large w3-hover-white" title="My Account">

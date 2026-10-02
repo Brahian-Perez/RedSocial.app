@@ -1,12 +1,25 @@
+import { useState } from 'react'
 import CrearPublicacion from './CrearPublicacion'
 import Publicacion from './Publicacion'
 
 const lorem = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
 
 function ColumnaCentral() {
+  const [publicaciones, setPublicaciones] = useState([])
+
+  const agregarPublicacion = (texto) => {
+    setPublicaciones([{ id: Date.now(), texto }, ...publicaciones])
+  }
+
   return (
     <div className="w3-col m7">
-      <CrearPublicacion />
+      <CrearPublicacion onPublicar={agregarPublicacion} />
+
+      {publicaciones.map((publicacion) => (
+        <Publicacion key={publicacion.id} avatar="https://www.w3schools.com/w3images/avatar3.png" nombre="Me" tiempo="Just now">
+          <p>{publicacion.texto}</p>
+        </Publicacion>
+      ))}
 
       <Publicacion avatar="https://www.w3schools.com/w3images/avatar2.png" nombre="John Doe" tiempo="1 min">
         <p>{lorem}</p>
