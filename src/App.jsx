@@ -1,27 +1,28 @@
-import Navbar from './componentes/Navbar'
-import ColumnaIzquierda from './componentes/ColumnaIzquierda'
-import ColumnaCentral from './componentes/ColumnaCentral'
-import ColumnaDerecha from './componentes/ColumnaDerecha'
-import Footer from './componentes/Footer'
+
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import MainLayout from './layouts/MainLayout'
+import ConfigPage from './pages/ConfigPage'
+import HomePage from './pages/HomePage'
+import ChatPage from './pages/ChatPage'
+
 
 function App() {
   return (
     <>
-      <Navbar />
+      <BrowserRouter>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/configuracion" element={<ConfigPage />} />
+            <Route path="/chat" element={<ChatPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
 
-      {/* Page Container */}
-      <div className="w3-container w3-content" style={{ maxWidth: '1400px', marginTop: '80px' }}>
-        <div className="w3-row">
-          <ColumnaIzquierda />
-          <ColumnaCentral />
-          <ColumnaDerecha />
-        </div>
-      </div>
-      <br />
 
-      <Footer />
     </>
   )
 }
+
 
 export default App
