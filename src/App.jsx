@@ -4,6 +4,7 @@ import MainLayout from './layouts/MainLayout'
 import ConfigPage from './pages/ConfigPage'
 import HomePage from './pages/HomePage'
 import ChatPage from './pages/ChatPage'
+import LoginPage from './pages/LoginPage'
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route path="/configuracion" element={<ConfigPage />} />
             <Route path="/chat" element={<ChatPage />} />
           </Route>
+          <Route path="/login" element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
 
