@@ -37,7 +37,7 @@ const handleSubmit = (e) => {
     />
 
     <div className="w3-section">
-      <button
+      <button href="/home"
         type="submit"
         className="w3-button w3-theme-d2 w3-round w3-block w3-section"
       >

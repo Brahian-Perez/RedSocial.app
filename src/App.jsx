@@ -5,6 +5,8 @@ import ConfigPage from './pages/ConfigPage'
 import HomePage from './pages/HomePage'
 import ChatPage from './pages/ChatPage'
 import LoginPage from './pages/LoginPage'
+import GroupPage from './pages/GroupPage'
+import RegisterPage from './pages/RegisterPage'
 
 
 function App() {
@@ -12,12 +14,15 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
+          
           <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/configuracion" element={<ConfigPage />} />
             <Route path="/chat" element={<ChatPage />} />
+            <Route path="/grupos" element={<GroupPage />} />
           </Route>
-          <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/registro" element={<RegisterPage />} />
         </Routes>
       </BrowserRouter>
 
