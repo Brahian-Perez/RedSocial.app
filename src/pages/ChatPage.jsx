@@ -1,55 +1,56 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { api } from '../services/api'
 import ChatSearch from '../componentes/chats/ChatSearch'
 import Chat from '../componentes/chats/Chat'
 import ChatWindow from '../componentes/chats/ChatWindow'
 
-const chats = [
-    {
-        id: 1,
-        avatar: "https://www.w3schools.com/w3images/avatar2.png",
-        name: "John Doe",
-        message: "¡Claro! Quedó genial.",
-        time: "Ayer",
-    },
-    {
-        id: 2,
-        avatar: "https://www.w3schools.com/w3images/avatar6.png",
-        name: "Jane Smith",
-        message: "¡Gracias! Me alegra que te guste.",
-        time: "Hoy",
-    },
-    {
-        id: 4,
-        avatar: "https://www.w3schools.com/w3images/avatar3.png",
-        name: "Ana López",
-        message: "¿Nos vemos mañana?",
-        time: "Lun",
-    },
-]
+// El backend todavía no tiene una ruta para listar usuarios (GET /api/usuarios),
+// así que los contactos se cargan uno por uno con GET /api/usuarios/:id
+const CONTACTOS_IDS = [1, 2, 3]
 
 function ChatPage() {
+    const { usuario } = useAuth()
+    const [contactos, setContactos] = useState([])
+    const [seleccionadoId, setSeleccionadoId] = useState(null)
+    const [busqueda, setBusqueda] = useState('')
+
+    useEffect(() => {
+        let cancelado = false
+        const ids = CONTACTOS_IDS.filter((id) => id !== usuario.id)
+        Promise.all(ids.map((id) => api(`/usuarios/${id}`).catch(() => null)))
+            .then((lista) => { if (!cancelado) setContactos(lista.filter(Boolean)) })
+        return () => { cancelado = true }
+    }, [usuario.id])
+
+    const filtrados = contactos.filter((contacto) =>
+        contacto.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    )
+    const contactoActivo = contactos.find((c) => c.id === seleccionadoId) || contactos[0]
+
     return (
         <>
             <div className="w3-container w3-content" style={{ maxWidth: '1200px', marginTop: '80px' }}>
                 <div className="w3-row">
                     <div className="w3-col m4">
                         <div className="w3-card w3-round w3-white">
-                            <ChatSearch />
+                            <ChatSearch busqueda={busqueda} onBuscar={setBusqueda} />
                             <ul className="w3-ul w3-hoverable">
-                                {chats.map((chat) => (
+                                {filtrados.map((contacto) => (
                                     <Chat
-                                        key={chat.id}
-                                        avatar={chat.avatar}
-                                        name={chat.name}
-                                        message={chat.message}
-                                        time={chat.time}
+                                        key={contacto.id}
+                                        avatar={contacto.avatar}
+                                        name={contacto.nombre}
+                                        message={contacto.ciudad}
+                                        activo={contactoActivo?.id === contacto.id}
+                                        onClick={() => setSeleccionadoId(contacto.id)}
                                     />
                                 ))}
                             </ul>
                         </div>
 
                     </div>
-                    <ChatWindow />
+                    {contactoActivo && <ChatWindow key={contactoActivo.id} contacto={contactoActivo} />}
                 </div>
             </div>
         </>

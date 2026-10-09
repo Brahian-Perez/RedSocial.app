@@ -1,9 +1,4 @@
-import { useState } from 'react'
-import ButtonsFunction from '../buttonsComponents/ButtonsFunction'
-
-function GroupSearch() {
-  const [busqueda, setBusqueda] = useState('')
-
+function GroupSearch({ busqueda, onBuscar }) {
   return (
     <div className="w3-card w3-round w3-white">
       <div className="w3-container w3-padding-16">
@@ -13,11 +8,8 @@ function GroupSearch() {
           type="text"
           placeholder="Nombre del grupo..."
           value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
+          onChange={(e) => onBuscar(e.target.value)}
         />
-        <div className="w3-margin-top">
-          <ButtonsFunction name="Buscar" icono="fa fa-search" action={() => alert(`Buscando: ${busqueda}`)} />
-        </div>
       </div>
     </div>
   )

@@ -1,8 +1,17 @@
+import { useState } from 'react'
+import { useApi } from '../hooks/useApi'
 import MyGroup from '../componentes/group/MyGroup'
 import RecomendedGroup from '../componentes/group/RecomendedGroup'
 import GroupSearch from '../componentes/group/GroupSearch'
 
 function GroupPage() {
+  const { datos: grupos, cargando, error } = useApi('/grupos')
+  const [busqueda, setBusqueda] = useState('')
+
+  const filtrados = (grupos || []).filter((grupo) =>
+    (grupo.nombre || '').toLowerCase().includes(busqueda.toLowerCase())
+  )
+
   return (
     <>
       <div className="w3-container w3-content" style={{ maxWidth: '1200px', marginTop: '80px' }}>
@@ -11,9 +20,9 @@ function GroupPage() {
             <MyGroup />
           </div>
           <div className="w3-col m6">
-            <RecomendedGroup />
+            <GroupSearch busqueda={busqueda} onBuscar={setBusqueda} />
             <br />
-            <GroupSearch />
+            <RecomendedGroup grupos={filtrados} cargando={cargando} error={error} />
           </div>
         </div>
       </div>

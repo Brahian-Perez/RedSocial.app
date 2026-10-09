@@ -1,58 +1,41 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import FormInput from "./FormInput";
+import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
+import { loginApi } from '../../services/api'
 
 function LoginForm({ onLogin }) {
-  const [datos, setDatos] = useState({ email: "", password: "" });
+  let { register, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm();
 
-const handleChange = (e) => {
-  setDatos({ ...datos, [e.target.name]: e.target.value });
-};
-
-const handleSubmit = (e) => {
-  e.preventDefault();
-  onLogin(datos);
-};
+  let onSubmited = async (data) => {
+    try {
+      let usuario = await loginApi(data.email, data.contrasena);
+      onLogin(usuario);
+    } catch (error) {
+      setError("root.servidor", { message: error.message });
+    }
+  }
 
   return (
-  <form className="w3-container w3-padding-24" onSubmit={handleSubmit}>
-    <FormInput
-      label="Correo electrónico"
-      icono="fa-envelope"
-      type="email"
-      name="email"
-      value={datos.email}
-      onChange={handleChange}
-      placeholder="tu@email.com"
-    />
-
-    <FormInput
-      label="Contraseña"
-      icono="fa-lock"
-      type="password"
-      name="password"
-      value={datos.password}
-      onChange={handleChange}
-      placeholder="********"
-    />
-
-    <div className="w3-section">
-      <button href="/home"
-        type="submit"
-        className="w3-button w3-theme-d2 w3-round w3-block w3-section"
-      >
-        <i className="fa fa-sign-in"></i> Acceder
-      </button>
-    </div>
-
-    <p className="w3-center">
-      <Link to="/recuperar">¿Olvidaste tu contraseña?</Link>
-    </p>
-    <p className="w3-center">
-      ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>.
-    </p>
-  </form>
-);
+    <form onSubmit={handleSubmit(onSubmited)} className="w3-container w3-padding-24" noValidate>
+      {errors.root?.servidor && <p className="w3-text-red w3-center">{errors.root.servidor.message}</p>}
+      <div className="w3-section">
+        <label htmlFor="email"><i className="fa fa-envelope"></i> Correo electrónico</label>
+        <input id="email" className="w3-input w3-border w3-round" {...register("email", { required: "Este campo es obligatorio" })} type="email" placeholder="tu@email.com" />
+        {errors.email && <span className="w3-text-red">{errors.email.message}</span>}
+      </div>
+      <div className="w3-section">
+        <label htmlFor="contrasena"><i className="fa fa-lock"></i> Contraseña</label>
+        <input id="contrasena" className="w3-input w3-border w3-round" {...register("contrasena", { required: "Este campo es obligatorio" })} type="password" placeholder="********" />
+        {errors.contrasena && <span className="w3-text-red">{errors.contrasena.message}</span>}
+      </div>
+      <div className="w3-section">
+        <button type="submit" disabled={isSubmitting} className="w3-button w3-theme-d2 w3-round w3-block w3-section">
+          <i className="fa fa-sign-in"></i> {isSubmitting ? "Ingresando..." : "Acceder"}
+        </button>
+      </div>
+      <p className="w3-center"><a href="#">¿Olvidaste tu contraseña?</a></p>
+      <p className="w3-center">¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>.</p>
+    </form>
+  )
 }
 
-export default LoginForm;
+export default LoginForm
